@@ -338,7 +338,29 @@ class Cmalllib extends CI_Controller
 
 		return json_encode($updatedata);
 	}
+    public function update_post_review_count($cit_id = 0)
+    {
+        $cit_id = (int) $cit_id;
+        if (empty($cit_id) OR $cit_id < 1) {
+            return;
+        }
+        $this->CI->load->model(array('Post_model', 'Post_review_model'));
+        $result = $this->CI->Post_review_model->get_review_count($cit_id);
 
+        $avg = 0;
+
+        if (element('cnt', $result)) {
+            $avg = round(10 * element('cre_score', $result) / element('cnt', $result)) / 10;
+        }
+
+        $updatedata = array(
+            'post_review_count' => element('cnt', $result),
+            'post_review_average' => $avg,
+        );
+        $this->CI->Post_model->update($cit_id, $updatedata);
+
+        return json_encode($updatedata);
+    }
 
 	public function update_qna_count($cit_id = 0)
 	{

@@ -1,6 +1,17 @@
 <?php $this->managelayout->add_css(element('view_skin_url', $layout) . '/css/style.css'); ?>
-
-<div class="mypage">
+<header class="m-header">
+    <div class="in-hd sub-hd">
+        <div class="logo-box">
+            <button type="button" class="left-btn">이전</button>
+            <h1 class="logo"><a href="/">닥터모아</a></h1>
+        </div>
+        <div class="src-out">
+            <p class="blue-txt">내정보수정</p>
+            <button type="button" class="ham-btn"></button>
+        </div>
+    </div>
+</header>
+<div class="content-box info-con">
 	<ul class="nav nav-tabs">
 		<li><a href="<?php echo site_url('mypage'); ?>" title="마이페이지">마이페이지</a></li>
 		<li><a href="<?php echo site_url('mypage/post'); ?>" title="나의 작성글">나의 작성글</a></li>

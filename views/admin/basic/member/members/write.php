@@ -1,4 +1,4 @@
-<script type="text/javascript" src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+<script type="text/javascript" src="https://spi.maps.daum.net/postcode/guidessl"></script>
 <div class="box">
 	<div class="box-table">
 		<?php

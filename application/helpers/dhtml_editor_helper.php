@@ -25,7 +25,11 @@ if ( ! function_exists('display_dhtml_editor')) {
 			$editorclassname = 'ckeditor';
 			$style = 'style="width:98%;"';
 		}
-
+        if ($editor_type === 'summernote' && $is_dhtml_editor) {
+            $editor_url = site_url('plugin/editor/summernote');
+            $editorclassname = 'cont-ul-tit';
+            $style = 'style="width:90%;"';
+        }
 		$html = '';
 
 		if ($editor_type === 'smarteditor' && $is_dhtml_editor
@@ -45,6 +49,16 @@ if ( ! function_exists('display_dhtml_editor')) {
 			$html .= "\n" . '<script src="' . $editor_url . '/config.js"></script>';
 			define('LOAD_DHTML_EDITOR_JS', true);
 		}
+        if ($editor_type === 'summernote' && $is_dhtml_editor
+            && ! defined('LOAD_DHTML_EDITOR_JS')) {
+
+
+            $html .= "\n" . '<script type="text/javascript">var editor_url = "' . $editor_url . '";</script>';
+            $html .= "\n" . '<script src="' . $editor_url . '/summernote-lite.min.js"></script>';
+            $html .= "\n" . '<script src="' . $editor_url . '/editor_config.js"></script>';
+            define('LOAD_DHTML_EDITOR_JS', true);
+
+        }
 		$html .= "\n<textarea id=\"" . $name . "\" name=\"" . $name . "\" class=\"" . $editorclassname . ' ' . $classname . "\" " . $style . ">" . $content . "</textarea>";
 
 		return $html;

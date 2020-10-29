@@ -1,3 +1,12 @@
+//검색버튼
+$('.src-btn').click(function () {
+	var keyword = $('input[name=keyword]').val();
+	if(!keyword){
+		alert("검색할 키워드를 입력하세요");
+	}else{
+		location.href='/board/b-a-1?&skeyword='+keyword;
+	}
+})
 //뒤로가기
 $(document).on("click",".left-btn",function () {
 	console.log(1111,window.history.length)
@@ -223,24 +232,7 @@ $(document).on("click",".adminAccessApply",function () {
 		});
 	}
 })
-//썸모노트 이미지 업로드
-function uploadSummernoteImageFile(file, editor) {
-	data = new FormData();
-	data.append("file", file);
-	$.ajax({
-		data : data,
-		type : "POST",
-		// enctype: 'multipart/form-data',
-		url : "/fileupload/do_upload",
-		contentType : false,
-		processData : false,
-		success : function(data) {
-			console.log(data)
-			//항상 업로드된 파일의 url이 있어야 한다.
-			$(editor).summernote('insertImage', base_url+'assets/editor/'+data.imgData.file_name);
-		}
-	});
-}
+
 //게시판 저장
 function submitBoardFormSave(){
 	var title = $('input[name=title]').val();

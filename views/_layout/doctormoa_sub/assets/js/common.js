@@ -85,11 +85,18 @@ $(".ham-i").click(function(e){
     e.preventDefault();
     $("#ham-mo").addClass('on');
 });
+$(".doc-mo-btn").click(function(e){
+    e.preventDefault();
+    $("#doc-mo").addClass('on');
+});
 $(".modalClose").click(function(){
     $(this).parents(".modal").removeClass('on');
     $('body').css('overflow', 'auto');
 });
-
+$(".review-btn-t").click(function(e){//201027 추가
+    e.preventDefault();
+    $("#review-mo-t").addClass('on');
+});//~
  //summernote
  $(document).ready(function (){
     $('#summernote').summernote({

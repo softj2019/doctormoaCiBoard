@@ -1,12 +1,23 @@
-
+<header class="m-header">
+    <div class="in-hd sub-hd">
+        <div class="logo-box">
+            <button type="button" class="left-btn">이전</button>
+            <h1 class="logo"><a href="/">닥터모아</a></h1>
+        </div>
+        <div class="src-out">
+            <p class="blue-txt">마이페이지</p>
+            <button type="button" class="ham-btn"></button>
+        </div>
+    </div>
+</header>
 <div class="content-box info-con">
     <div>
         <div class="page-info">
             <p class="page-name">이름/별명/아이디</p>
-            <p class="page-mail"><?php echo html_escape($this->member->item('mem_username')); ?>/<?php echo html_escape($this->member->item('mem_nickname')); ?>/<?php echo html_escape($this->member->item('mem_userid')); ?></p>
+            <p class="page-mail"><?php echo html_escape($this->member->item('mem_username'))? html_escape($this->member->item('mem_username')):"이름없음"; ?>/<?php echo html_escape($this->member->item('mem_nickname')); ?>/<?php echo html_escape($this->member->item('mem_userid')); ?></p>
         </div>
         <ul class="cont-ul">
-            <li class="bor-top"><a href="">내정보</a></li>
+            <li class="bor-top"><a href="<?php echo site_url('membermodify'); ?>">내정보수정</a></li>
             <li><a href="">방문후기</a></li>
             <li><a href="<?php echo site_url('login/logout?url=' . urlencode(current_full_url())); ?>">로그아웃</a></li>
         </ul>

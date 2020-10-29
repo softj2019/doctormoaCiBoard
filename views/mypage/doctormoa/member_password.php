@@ -1,7 +1,18 @@
 <?php $this->managelayout->add_css(element('view_skin_url', $layout) . '/css/style.css'); ?>
-
-<div class="mypage ">
-	<ul class="nav nav-tabs">
+<header class="m-header">
+    <div class="in-hd sub-hd">
+        <div class="logo-box">
+            <button type="button" class="left-btn">이전</button>
+            <h1 class="logo"><a href="/">닥터모아</a></h1>
+        </div>
+        <div class="src-out">
+            <p class="blue-txt">회원 비밀번호 확인</p>
+            <button type="button" class="ham-btn"></button>
+        </div>
+    </div>
+</header>
+<div class="content-box info-con">
+	<ul class="nav nav-tabs hidden">
 		<li><a href="<?php echo site_url('mypage'); ?>" title="마이페이지">마이페이지</a></li>
 		<li><a href="<?php echo site_url('mypage/post'); ?>" title="나의 작성글">나의 작성글</a></li>
 
@@ -17,7 +28,6 @@
 		<li <?php if (uri_string() === 'membermodify/memberleave') { ?>class="active" <?php } ?>><a href="<?php echo site_url('membermodify/memberleave'); ?>" title="탈퇴하기">탈퇴하기</a></li>
 	</ul>
 
-	<h3>회원 비밀번호 확인</h3>
 
 	<?php
 	echo validation_errors('<div class="alert alert-warning" role="alert">', '</div>');
@@ -25,17 +35,15 @@
 	$attributes = array('name' => 'fconfirmpassword', 'id' => 'fconfirmpassword');
 	echo form_open(current_url(), $attributes);
 	?>
-		<ol class="askpassword">
+		<ol class="cont-ul info-ul">
 			<li>
 				<span>아이디</span>
 				<div class="form-text"><strong><?php echo $this->member->item('mem_userid'); ?></strong></div>
 			</li>
 			<li>
 				<span>비밀번호</span>
-				<div class="group">
-					<input type="password" class="input px150" id="mem_password" name="mem_password" />
-					<button class="btn btn-primary" type="submit">확인</button>
-				</div>
+                <input type="password" class="input-3" id="mem_password" name="mem_password" />
+                <button class="blue-btn" type="submit">확인</button>
 			</li>
 			<li>
 				<span></span>

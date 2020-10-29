@@ -155,7 +155,7 @@ class Managelayout extends CI_Controller
 		}
 		$layout = '_layout/' . $layoutdirname;
 		$data['layout_skin_path'] = $layout;
-		$data['layout_skin_url'] = base_url( VIEW_DIR . $data['layout_skin_path']);
+		$data['layout_skin_url'] = fix_url( VIEW_DIR . $data['layout_skin_path']);
 		$layout .= '/';
 		if (element('layout', $config)) {
 			$layout .= element('layout', $config);
@@ -270,7 +270,7 @@ class Managelayout extends CI_Controller
 		}
 		$layout = '_layout/' . $layoutdirname;
 		$data['layout_skin_path'] = $layout;
-		$data['layout_skin_url'] = base_url( VIEW_DIR . $data['layout_skin_path']);
+		$data['layout_skin_url'] = fix_url( VIEW_DIR . $data['layout_skin_path']);
 		$layout .= '/';
 		if (element('layout', $config)) {
 			$layout .= element('layout', $config);
@@ -354,6 +354,7 @@ class Managelayout extends CI_Controller
 		$_css = $this->css;
 		if ($_css) {
 			foreach ($_css as $val) {
+                $val = fix_url($val);
 				$return .= '<link rel="stylesheet" type="text/css" href="' . $val . '" />';
 			}
 		}
@@ -370,6 +371,7 @@ class Managelayout extends CI_Controller
 		$_js = $this->js;
 		if ($_js) {
 			foreach ($_js as $val) {
+                $val = fix_url($val);
 				$return .= '<script type="text/javascript" src="' . $val . '"></script>';
 			}
 		}

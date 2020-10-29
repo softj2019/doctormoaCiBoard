@@ -1,7 +1,18 @@
 <?php $this->managelayout->add_css(element('view_skin_url', $layout) . '/css/style.css'); ?>
-
-<div class="mypage">
-	<ul class="nav nav-tabs">
+<header class="m-header">
+    <div class="in-hd sub-hd">
+        <div class="logo-box">
+            <button type="button" class="left-btn">이전</button>
+            <h1 class="logo"><a href="/">닥터모아</a></h1>
+        </div>
+        <div class="src-out">
+            <p class="blue-txt">회원정보 수정</p>
+            <button type="button" class="ham-btn"></button>
+        </div>
+    </div>
+</header>
+<div class="content-box info-con">
+	<ul class="nav nav-tabs hidden">
 		<li><a href="<?php echo site_url('mypage'); ?>" title="마이페이지">마이페이지</a></li>
 		<li><a href="<?php echo site_url('mypage/post'); ?>" title="나의 작성글">나의 작성글</a></li>
 		<?php if ($this->cbconfig->item('use_point')) { ?>
@@ -15,7 +26,7 @@
 		<li><a href="<?php echo site_url('membermodify/memberleave'); ?>" title="탈퇴하기">탈퇴하기</a></li>
 	</ul>
 
-	<h3>회원정보 수정</h3>
+<!--	<h3>회원정보 수정</h3>-->
 
 	<?php
 	echo validation_errors('<div class="alert alert-warning" role="alert">', '</div>');
@@ -24,7 +35,7 @@
 	$attributes = array('name' => 'fregisterform', 'id' => 'fregisterform');
 	echo form_open_multipart(current_url(), $attributes);
 	?>
-		<ol class="member_modify">
+		<ol class="mypage-ul">
 			<li>
 				<span>아이디</span>
 				<div class="form-text text-primary"><strong><?php echo $this->member->item('mem_userid'); ?></strong></div>
@@ -261,7 +272,7 @@
 
 <?php
 $this->managelayout->add_css(base_url('assets/css/datepicker3.css'));
-$this->managelayout->add_js('http://dmaps.daum.net/map_js_init/postcode.v2.js');
+$this->managelayout->add_js('https://spi.maps.daum.net/postcode/guidessl');
 $this->managelayout->add_js(base_url('assets/js/bootstrap-datepicker.js'));
 $this->managelayout->add_js(base_url('assets/js/bootstrap-datepicker.kr.js'));
 ?>

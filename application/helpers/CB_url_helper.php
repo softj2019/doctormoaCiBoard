@@ -169,3 +169,59 @@ if ( ! function_exists('document_url')) {
 		return site_url(config_item('uri_segment_document') . '/' . $key);
 	}
 }
+
+function check_https()
+
+{
+
+    if ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) {
+
+        return true;
+
+    }
+
+    return false;
+
+}
+
+
+
+function fix_url($url)
+
+{
+
+    $url = trim($url);
+
+    if(strpos($url, 'http') === 0 && strpos($url, 'https') !== 0) {
+
+        if(check_https())
+
+            $url = 'https://'.str_ireplace('http://', '', $url);
+
+    }
+
+
+
+    return $url;
+
+}
+
+
+
+function my_base_url($url = '')
+
+{
+
+    return fix_url(base_url($url));
+
+}
+
+
+
+function my_site_url($url = '')
+
+{
+
+    return fix_url(site_url($url));
+
+}

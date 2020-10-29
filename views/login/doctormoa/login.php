@@ -12,7 +12,7 @@
     </div>
 </header>
 <div class="in-box">
-    <h1 class="logo-box"><a href="../index.html">닥터모아</a></h1>
+    <h1 class="logo-box"><a href="/">닥터모아</a></h1>
     <div class="login-box">
     <?php
     echo validation_errors('<div class="alert alert-warning" role="alert">', '</div>');

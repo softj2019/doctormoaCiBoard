@@ -1792,7 +1792,187 @@ class Cmall extends CB_Controller
 		$this->view = $skin;
 	}
 
+    public function post_review_write($cit_id = 0, $cre_id = 0)
+    {
+        header('Content-type: application/json');
+        // 이벤트 라이브러리를 로딩합니다
+        $eventname = 'event_cmall_post_review_write';
+        $this->load->event($eventname);
 
+        /**
+         * 로그인이 필요한 페이지입니다
+         */
+        required_user_login('alert');
+
+
+        $view = array();
+        $view['view'] = array();
+
+        $mem_id = (int) $this->member->item('mem_id');
+
+        // 이벤트가 존재하면 실행합니다
+        $view['view']['event']['before'] = Events::trigger('before', $eventname);
+
+        $this->load->model(array('Post_model', 'Post_review_model'));
+
+        /**
+         * 프라이머리키에 숫자형이 입력되지 않으면 에러처리합니다
+         */
+        if ($cre_id) {
+            $cre_id = (int) $cre_id;
+            if (empty($cre_id) OR $cre_id < 1) {
+                show_404();
+            }
+        }
+        $cit_id = (int) $cit_id;
+        if (empty($cit_id) OR $cit_id < 1) {
+            show_404();
+        }
+
+        $primary_key = $this->Post_review_model->primary_key;
+
+        $item = $this->Post_model->get_one($cit_id);
+        if ( ! element('post_id', $item)) {
+            alert_close('존재하지 않는 상품입니다');
+        }
+
+        /**
+         * 수정 페이지일 경우 기존 데이터를 가져옵니다
+         */
+        $getdata = array();
+        if ($cre_id) {
+            $getdata = $this->Post_review_model->get_one($cre_id);
+            if ( ! element('post_id', $getdata)) {
+                alert_close('잘못된 접근입니다');
+            }
+            $is_admin = $this->member->is_admin();
+            if ($is_admin === false
+                && (int) element('mem_id', $getdata) !== $mem_id) {
+                alert_close('본인의 글 외에는 접근하실 수 없습니다');
+            }
+        }
+
+        /**
+         * 주문완료 후 사용후기 작성 가능한 경우
+         **/
+//        if ( ! $this->cbconfig->item('use_cmall_product_review_anytime')) {
+//            $ordered = $this->cmalllib->is_ordered_item($mem_id, $cit_id);
+//            if (empty($ordered)) {
+//                alert_close('주문을 완료하신 후에 상품후기 작성이 가능합니다');
+//            }
+//
+//        }
+
+        /**
+         * Validation 라이브러리를 가져옵니다
+         */
+        $this->load->library('form_validation');
+
+        /**
+         * 전송된 데이터의 유효성을 체크합니다
+         */
+        $config = array(
+            array(
+                'field' => 'cre_title',
+                'label' => '제목',
+                'rules' => 'trim|required',
+            ),
+            array(
+                'field' => 'cre_content',
+                'label' => '내용',
+                'rules' => 'trim|required',
+            ),
+            array(
+                'field' => 'cre_score',
+                'label' => '평점',
+                'rules' => 'trim|required|numeric|is_natural_no_zero|greater_than_equal_to[1]|less_than_equal_to[5]',
+            ),
+        );
+        $this->form_validation->set_rules($config);
+
+
+        /**
+         * 유효성 검사를 하지 않는 경우, 또는 유효성 검사에 실패한 경우입니다.
+         * 즉 글쓰기나 수정 페이지를 보고 있는 경우입니다
+         */
+        if ($this->form_validation->run() === false) {
+
+            // 이벤트가 존재하면 실행합니다
+            $view['view']['event']['formrunfalse'] = Events::trigger('formrunfalse', $eventname);
+
+            /**
+             * primary key 정보를 저장합니다
+             */
+            $view['view']['primary_key'] = $primary_key;
+            $view['view']['data'] = $getdata;
+            $view['view']['item'] = $item;
+            $view['view']['errors']=$this->form_validation->error_array();
+
+
+            echo json_encode($view);
+
+        } else {
+            /**
+             * 유효성 검사를 통과한 경우입니다.
+             * 즉 데이터의 insert 나 update 의 process 처리가 필요한 상황입니다
+             */
+
+            // 이벤트가 존재하면 실행합니다
+            Events::trigger('formruntrue', $eventname);
+
+            $content_type = $this->cbconfig->item('use_cmall_product_review_dhtml') ? 1 : 0;
+            $updatedata = array(
+                'cit_id' => $cit_id,
+                'cre_title' => $this->input->post('cre_title', null, ''),
+                'cre_content' => $this->input->post('cre_content', null, ''),
+                'cre_content_html_type' => $content_type,
+                'cre_score' => $this->input->post('cre_score', null, 0),
+            );
+
+            /**
+             * 게시물을 수정하는 경우입니다
+             */
+            $param =& $this->querystring;
+            $page = (((int) $this->input->get('page')) > 0) ? ((int) $this->input->get('page')) : 1;
+
+            if ($cre_id) {
+
+                // 이벤트가 존재하면 실행합니다
+                Events::trigger('before_update', $eventname);
+
+                $this->Post_review_model->update($cre_id, $updatedata);
+                $cntresult = $this->cmalllib->update_post_review_count($cit_id);
+                $jresult = json_decode($cntresult, true);
+                $cnt = element('cit_review_count', $jresult);
+                echo json_encode($view);
+            } else {
+
+                // 이벤트가 존재하면 실행합니다
+                Events::trigger('before_insert', $eventname);
+
+                /**
+                 * 게시물을 새로 입력하는 경우입니다
+                 */
+                $updatedata['cre_datetime'] = cdate('Y-m-d H:i:s');
+                $updatedata['mem_id'] = $mem_id;
+                $updatedata['cre_ip'] = $this->input->ip_address();
+
+                if ( ! $this->cbconfig->item('use_cmall_product_review_approve')) {
+                    $updatedata['cre_status'] = 1;
+                }
+
+                $_cre_id = $this->Post_review_model->insert($updatedata);
+
+                //알람은 우선제거
+                //$this->cmalllib->review_alarm($_cre_id);
+
+                $cntresult = $this->cmalllib->update_post_review_count($cit_id);
+                $jresult = json_decode($cntresult, true);
+                $cnt = element('cit_review_count', $jresult);
+                echo json_encode($view);
+            }
+        }
+    }
 	public function review_write($cit_id = 0, $cre_id = 0)
 	{
 		// 이벤트 라이브러리를 로딩합니다
