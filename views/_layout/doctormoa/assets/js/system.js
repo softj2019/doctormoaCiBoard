@@ -1,12 +1,4 @@
-//검색버튼
-$('.src-btn').click(function () {
-	var keyword = $('input[name=keyword]').val();
-	if(!keyword){
-		alert("검색할 키워드를 입력하세요");
-	}else{
-		location.href='/board/b-a-1?&skeyword='+keyword;
-	}
-})
+
 //뒤로가기
 $(document).on("click",".left-btn",function () {
 	console.log(1111,window.history.length)

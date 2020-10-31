@@ -30,8 +30,13 @@ if (element('syntax_highlighter', element('board', $view)) OR element('comment_s
                 <li><?=$view["extra_content"][9]["output"]?></li>
                 <li class="ul2-name"><h3><?=$view["extra_content"][0]["output"]?></h3><span><?=$view["extra_content"][1]["output"]?></span></li>
                 <li>
-                    <div class="star-i flexcenter">
-                        <i class="ri-star-fill yell"></i><i class="ri-star-fill yell"></i><i class="ri-star-fill yell"></i><i class="ri-star-half-fill yell"></i><i class="ri-star-line yell"></i><p class="rev-s">5.0 <span>(리뷰 10)</span></p>
+                    <div class="star-i top flexcenter">
+                        <i class="<?=round(element('post_review_average', element('post', $view)))>=1?"ri-star-fill":"ri-star-line"?> yell"></i>
+                        <i class="<?=round(element('post_review_average', element('post', $view)))>=2?"ri-star-fill":"ri-star-line"?> yell"></i>
+                        <i class="<?=round(element('post_review_average', element('post', $view)))>=3?"ri-star-fill":"ri-star-line"?> yell"></i>
+                        <i class="<?=round(element('post_review_average', element('post', $view)))>=4?"ri-star-fill":"ri-star-line"?> yell"></i>
+                        <i class="<?=round(element('post_review_average', element('post', $view)))>=5?"ri-star-fill":"ri-star-line"?> yell"></i>
+                        <p class="rev-s"><?=round(element('post_review_average', element('post', $view)))?> <span>(리뷰 <?=element('post_review_count', element('post', $view))?> )</span></p>
                     </div>
                 </li>
             </ul>
@@ -84,77 +89,30 @@ if (element('syntax_highlighter', element('board', $view)) OR element('comment_s
                 <li>Q&A</li>
             </ul>
             <div class="info-in2 ">
-                <h3 class="info-tit flexcenter">리뷰 모아보기</h3>
-                <div>
-<!--                    <form action="" class="flexcenter in2-form">-->
-<!--                        <select name="" id="">-->
-<!--                            <option value="">전체</option>-->
-<!--                            <option value="">기본</option>-->
-<!--                            <option value="">최신순</option>-->
-<!--                            <option value="">평점 높은순</option>-->
-<!--                            <option value="">평점 낮은순</option>-->
-<!--                        </select>-->
-<!--                        <input type="text">-->
-<!--                        <button type="button"></button>-->
-<!--                    </form>-->
-                    <div class="star-box">
-                        <p>별점평균</p>
-                        <div class="flexwrap">
-                            <div class="star-i flexcenter">
-                                <i class="ri-star-fill yell"></i><i class="ri-star-fill yell"></i><i class="ri-star-fill yell"></i><i class="ri-star-half-fill yell"></i><i class="ri-star-line yell"></i>
-                                <p class="rev-s"><span>5.0 </span> / 10</p>
-                            </div>
+                <div class="info-in2 ">
+                    <h3 class="info-tit flexcenter">리뷰 모아보기</h3>
+                    <div>
+                        <div class="star-box">
+                            <p>별점평균</p>
+                            <div class="flexwrap">
+                                <div class="star-i top2 flexcenter">
+                                    <i class="<?=round(element('post_review_average', element('post', $view)))>=1?"ri-star-fill":"ri-star-line"?> yell"></i>
+                                    <i class="<?=round(element('post_review_average', element('post', $view)))>=2?"ri-star-fill":"ri-star-line"?> yell"></i>
+                                    <i class="<?=round(element('post_review_average', element('post', $view)))>=3?"ri-star-fill":"ri-star-line"?> yell"></i>
+                                    <i class="<?=round(element('post_review_average', element('post', $view)))>=4?"ri-star-fill":"ri-star-line"?> yell"></i>
+                                    <i class="<?=round(element('post_review_average', element('post', $view)))>=5?"ri-star-fill":"ri-star-line"?> yell"></i>
+                                    <p class="rev-s"><span><?=round(element('post_review_average', element('post', $view)))?>  </span> / 5</p>
+                                </div>
 
-                            <?php if ( ! element('post_del', element('post', $view)) && (element('use_post_like', element('board', $view)) OR element('use_post_dislike', element('board', $view)))) { ?>
                                 <div class="g-icon flexcenter">
-                                    <?php if (element('use_post_like', element('board', $view))) { ?>
-                                        <a class="sm-icon" href="javascript:;" id="btn-post-like" onClick="post_like('<?php echo element('post_id', element('post', $view)); ?>', '1', 'post-like');" title="추천하기"><span class="post-like"><?php echo number_format(element('post_like', element('post', $view))); ?></span><br /><i class="fa fa-thumbs-o-up fa-lg"></i></a>
-                                    <?php } ?>
-                                    <?php if (element('use_post_dislike', element('board', $view))) { ?>
-                                        <a class="bad-icon" href="javascript:;" id="btn-post-dislike" onClick="post_like('<?php echo element('post_id', element('post', $view)); ?>', '2', 'post-dislike');" title="비추하기"><span class="post-dislike"><?php echo number_format(element('post_dislike', element('post', $view))); ?></span><br /><i class="fa fa-thumbs-o-down fa-lg"></i></a>
-                                    <?php } ?>
+                                    <p class="sm-icon" id="btn-post-like" onClick="post_like('<?php echo element('post_id', element('post', $view)); ?>', '1', 'post-like');"><span><?php echo number_format(element('post_like', element('post', $view))); ?></span></p>
+                                    <p class="bad-icon" id="btn-post-dislike" onClick="post_like('<?php echo element('post_id', element('post', $view)); ?>', '2', 'post-dislike');"><span><?php echo number_format(element('post_dislike', element('post', $view))); ?></span></p>
                                 </div>
-                            <?php } ?>
+                            </div>
                         </div>
+                        <div id="viewitemreview"></div>
                     </div>
-                    <ul class="review-box">
-                        <li><!--201027 수정-->
-                            <div class="tab2-tit flexwrap">
-                                <p><a href="">아이디</a></p>
-                                <div class="star-i flexcenter">
-                                    <i class="ri-star-fill yell"></i><p class="rev-s">5.0</p>
-                                </div>
-                            </div>
-                            <div class="review-btn">
-                                <div class="tab2-name flexwrap">
-                                    <p></p>
-                                    <p class="tab2-date">등록일<span class="flexcenter">20.09.07</span></p>
-                                </div>
-                                <div class="tab2-re">
-                                    <p>리뷰 부분입니다.</p>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="tab2-tit flexwrap">
-                                <p><a href="">아이디</a></p>
-                                <div class="star-i flexcenter">
-                                    <i class="ri-star-fill yell"></i><p class="rev-s">5.0</p>
-                                </div>
-                            </div>
-                            <div class="review-btn">
-                                <div class="tab2-name flexwrap">
-                                    <p></p>
-                                    <p class="tab2-date">등록일<span class="flexcenter">20.09.07</span></p>
-                                </div>
-                                <div class="tab2-re">
-                                    <p>리뷰 부분입니다.</p>
-                                </div>
-                            </div>
-                        </li><!--~-->
-                    </ul>
                 </div>
-                <a href=""class="con-btn">리뷰 전체보기</a>
             </div>
             <ul class="flexcenter info-nav2 mt10">
                 <li>상세정보</li>
@@ -644,6 +602,36 @@ if (element('highlight_keyword', $view)) {
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5324d894ca2340475b80170b942a832f&libraries=services"></script>
 <script>
+    //평점 평균
+    var average = '<?=round(element('post_review_average', element('post', $view)))?>';
+
+    $(document).ready(function () {
+        view_post_review('viewitemreview', '<?php echo element('post_id', element('post', $view)); ?>', '', '','',average);
+    })
+    function view_post_review(id, cit_id, page, opt, message,average) {
+        if (opt) {
+            $('html, body').animate({
+                scrollTop: $('#' + id).offset().top - 100
+            }, 0);
+        }
+
+        var cmall_review_url = cb_url + '/board_post/review_list/' + cit_id + '?average='+average+'&page=' + page;
+        var hash = window.location.hash;
+
+        $('#' + id).load(cmall_review_url, function() {
+            if (message) {
+                $('.alert-cmall-review-list-message-content').html(message);
+                $('.alert-cmall-review-list-message').addClass('alert-success').removeClass('alert-warning').show();
+            }
+            if (hash) {
+                var st = $(hash).offset().top;
+                $('html, body').animate({ scrollTop: st }, 200); //200ms duration
+            }
+            if (typeof(SyntaxHighlighter) !== 'undefined') {
+                SyntaxHighlighter.highlight();
+            }
+        });
+    }
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
             center: new daum.maps.LatLng(37.537187, 127.005476), // 지도의 중심좌표
@@ -739,4 +727,7 @@ if (element('highlight_keyword', $view)) {
         $('input[name=cre_score').val(score)
         return false;
     });
+    //평점평균
+
+
 </script>

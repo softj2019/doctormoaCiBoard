@@ -28,7 +28,7 @@
     <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.js"></script>
+<!--    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote-lite.min.js"></script>-->
     <script type="text/javascript">
     // 자바스크립트에서 사용하는 전역변수 선언
     var cb_url = "<?php echo trim(site_url(), '/'); ?>";
@@ -48,14 +48,14 @@
     var cookie_prefix = "<?php echo config_item('cookie_prefix'); ?>";
     </script>
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="<?php echo base_url('assets/js/html5shiv.min.js'); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url('assets/js/respond.min.js'); ?>"></script>
+    <script type="text/javascript" src="<?php echo my_base_url('assets/js/html5shiv.min.js'); ?>"></script>
+    <script type="text/javascript" src="<?php echo my_base_url('assets/js/respond.min.js'); ?>"></script>
     <![endif]-->
-    <script type="text/javascript" src="<?php echo base_url('assets/js/common.js'); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.validate.min.js'); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.validate.extension.js'); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url('assets/js/sideview.js'); ?>"></script>
-    <script type="text/javascript" src="<?php echo base_url('assets/js/js.cookie.js'); ?>"></script>
+    <script type="text/javascript" src="<?php echo my_base_url('assets/js/common.js'); ?>"></script>
+    <script type="text/javascript" src="<?php echo my_base_url('assets/js/jquery.validate.min.js'); ?>"></script>
+    <script type="text/javascript" src="<?php echo my_base_url('assets/js/jquery.validate.extension.js'); ?>"></script>
+    <script type="text/javascript" src="<?php echo my_base_url('assets/js/sideview.js'); ?>"></script>
+    <script type="text/javascript" src="<?php echo my_base_url('assets/js/js.cookie.js'); ?>"></script>
     <?php echo $this->managelayout->display_js(); ?>
 </head>
 <body <?php echo isset($view) ? element('body_script', $view) : ''; ?>>
@@ -101,7 +101,7 @@
             <li><a href="/board/b-b-1">제품판매</a></li>
             <li><a href="/board/b-b-2">구인구직</a></li>
             <li><a href="/board/b-a-3">공지사항</a></li>
-            <li><a href="https://www.doctormoa.com/write/b-a-1">의사/병원 등록하기</a></li>
+            <li><a href="/write/b-a-1">의사/병원 등록하기</a></li>
         </ul>
 
     </div>
@@ -121,7 +121,7 @@
                     <li><a href="/board/b-b-1">제품판매</a></li>
                     <li><a href="/board/b-b-2">구인구직</a></li>
                     <li><a href="/board/b-a-3">공지사항</a></li>
-                    <li><a href="https://www.doctormoa.com/write/b-a-1">의사/병원 등록하기</a></li>
+                    <li><a href="/write/b-a-1">의사/병원 등록하기</a></li>
                 </ul>
             </div>
         </div>

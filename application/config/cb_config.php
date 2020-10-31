@@ -78,3 +78,4 @@ $config['email_smtp_crypto'] = 'ssl'; // SMTP Encryption. Can be null, tls or ss
  * CiBoard 주 : 캐시 기능 사용시, 우선순위를 결정합니다
  */
 $config['cache_method'] = array('adapter' => 'file', 'backup' => 'file');
+

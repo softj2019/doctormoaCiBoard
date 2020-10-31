@@ -30,14 +30,29 @@
 //	$is_open = false;
 //}
 ?>
+<form class="navbar-form navbar-right pull-right" action="<?php echo board_url(element('brd_key', element('board', element('list', $view)))); ?>" onSubmit="return postSearch(this);">
+    <input type="hidden" name="findex" value="<?php echo html_escape($this->input->get('findex')); ?>" />
+    <input type="hidden" name="category_id" value="<?php echo html_escape($this->input->get('category_id')); ?>" />
+    <div class="form-group">
+        <select class="input pull-left px100" name="sfield">
+            <option value="post_both" <?php echo ($this->input->get('sfield') === 'post_both') ? ' selected="selected" ' : ''; ?>>제목+내용</option>
+            <option value="post_title" <?php echo ($this->input->get('sfield') === 'post_title') ? ' selected="selected" ' : ''; ?>>제목</option>
+            <option value="post_content" <?php echo ($this->input->get('sfield') === 'post_content') ? ' selected="selected" ' : ''; ?>>내용</option>
+            <option value="post_nickname" <?php echo ($this->input->get('sfield') === 'post_nickname') ? ' selected="selected" ' : ''; ?>>회원명</option>
+            <option value="post_userid" <?php echo ($this->input->get('sfield') === 'post_userid') ? ' selected="selected" ' : ''; ?>>회원아이디</option>
+        </select>
+        <input type="text" class="input px150" placeholder="Search" name="skeyword" value="<?php echo html_escape($this->input->get('skeyword')); ?>" />
+        <button class="btn btn-primary btn-sm" type="submit"><i class="fa fa-search"></i></button>
+    </div>
+</form>
 <header class="m-header">
     <div class="hd-in flexwrap">
         <h1 class="logo"><a href="/">닥터모아</a></h1>
         <div class="src-out">
             <div class="src-form">
-                <form action="" class="flexwrap">
-                    <input type="text" class="src-inp" name="keyword">
-                    <button type="button" class="src-btn"></button>
+                <form name="mobile_header_search" id="mobile_header_search" action="<?php echo site_url('search'); ?>" onSubmit="return headerSearch(this);" class="flexwrap">
+                    <input type="text" class="src-inp" name="skeyword" accesskey="s" />
+                    <button type="submit" class="src-btn"></button>
                 </form>
             </div>
             <button type="button" class="ham-btn"></button>
@@ -85,7 +100,7 @@
                 <li><a href="/board/b-a-1?category_id=5"><i class="nav-dent"></i>치과</a></li>
                 <li><a href="/board/b-a-1?category_id=4"><i class="nav-me"></i>한의원</a></li>
                 <li><a href="/board/b-a-1?category_id=3"><i class="nav-bt"></i>뷰티샵</a></li>
-                <li><a href="/board/b-a-1"><i class="nav-more"></i>더보기</a></li>
+                <li><a href="/main/category"><i class="nav-more"></i>더보기</a></li>
             </ul>
         </div>
         <div class="chart flexwrap">

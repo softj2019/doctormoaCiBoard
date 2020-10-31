@@ -65,9 +65,9 @@
             <h1 class="logo"><a href="/">닥터모아</a></h1>
             <div class="src-out">
                 <div class="src-form">
-                    <form action="" class="flexwrap">
-                        <input type="text" class="src-inp">
-                        <button type="button" class="src-btn"></button>
+                    <form name="mobile_header_search" id="mobile_header_search" action="<?php echo site_url('search'); ?>" onSubmit="return headerSearch(this);" class="flexwrap">
+                        <input type="text" class="src-inp" name="skeyword" accesskey="s" />
+                        <button type="submit" class="src-btn"></button>
                     </form>
                 </div>
                 <button type="button" class="ham-btn"></button>
@@ -114,7 +114,7 @@
             <li><a href="/board/b-b-1">제품판매</a></li>
             <li><a href="/board/b-b-2">구인구직</a></li>
             <li><a href="/board/b-a-3">공지사항</a></li>
-            <li><a href="https://www.doctormoa.com/write/b-a-1">의사/병원 등록하기</a></li>
+            <li><a href="/write/b-a-1">의사/병원 등록하기</a></li>
         </ul>
 
     </div>
@@ -157,7 +157,7 @@
                     <li><a href="/board/b-b-1">제품판매</a></li>
                     <li><a href="/board/b-b-2">구인구직</a></li>
                     <li><a href="/board/b-a-3">공지사항</a></li>
-                    <li><a href="https://www.doctormoa.com/write/b-a-1">의사/병원 등록하기</a></li>
+                    <li><a href="/write/b-a-1">의사/병원 등록하기</a></li>
                 </ul>
             </div>
         </div>

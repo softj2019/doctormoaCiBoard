@@ -1209,6 +1209,7 @@ class Board_post extends CB_Controller
 		$list_num = $result['total_rows'] - ($page - 1) * $per_page;
 		if (element('list', $result)) {
 			foreach (element('list', $result) as $key => $val) {
+                $result['list'][$key]['extravars'] = $this->Post_extra_vars_model->get_all_meta(element('post_id', $val));
 				$result['list'][$key]['post_url'] = post_url(element('brd_key', $board), element('post_id', $val));
 
 				$result['list'][$key]['meta'] = $meta
@@ -1531,4 +1532,290 @@ class Board_post extends CB_Controller
 
 		}
 	}
+
+    /**
+     * 게시물 목록을 ajax 로 가져옵니다
+     */
+    public function review_list($cit_id = 0)
+    {
+        // 이벤트 라이브러리를 로딩합니다
+        $eventname = 'event_cmall_postreviewlist';
+        $this->load->event($eventname);
+
+        $cit_id = (int) $cit_id;
+        if (empty($cit_id) OR $cit_id < 1) {
+            show_404();
+        }
+
+        $view = array();
+        $view['view'] = array();
+
+        // 이벤트가 존재하면 실행합니다
+        $view['view']['event']['before'] = Events::trigger('before', $eventname);
+
+        $this->load->model(array('Post_model', 'Post_review_model'));
+
+        $item = $this->Post_model->get_one($cit_id);
+        if ( ! element('post_id', $item)) {
+            show_404();
+        }
+
+        $mem_id = (int) $this->member->item('mem_id');
+
+        /**
+         * 페이지에 숫자가 아닌 문자가 입력되거나 1보다 작은 숫자가 입력되면 에러 페이지를 보여줍니다.
+         */
+        $param =& $this->querystring;
+        $page = (((int) $this->input->get('page')) > 0) ? ((int) $this->input->get('page')) : 1;
+        $findex = $this->input->get('findex', null, 'post_id');
+        $forder = $this->input->get('forder', null, 'desc');
+        $sfield = '';
+        $skeyword = '';
+
+        $per_page = 3;
+        $offset = ($page - 1) * $per_page;
+
+        $is_admin = $this->member->is_admin();
+
+        /**
+         * 게시판 목록에 필요한 정보를 가져옵니다.
+         */
+        $where = array();
+//        $where['cre_status'] = 1;
+        $where['cit_id'] = $cit_id;
+
+        $thumb_width = ($this->cbconfig->get_device_view_type() === 'mobile')
+            ? $this->cbconfig->item('cmall_product_review_mobile_thumb_width')
+            : $this->cbconfig->item('cmall_product_review_thumb_width');
+        $autolink = ($this->cbconfig->get_device_view_type() === 'mobile')
+            ? $this->cbconfig->item('use_cmall_product_review_mobile_auto_url')
+            : $this->cbconfig->item('use_cmall_product_review_auto_url');
+        $popup = ($this->cbconfig->get_device_view_type() === 'mobile')
+            ? $this->cbconfig->item('cmall_product_review_mobile_content_target_blank')
+            : $this->cbconfig->item('cmall_product_review_content_target_blank');
+
+        $result = $this->Post_review_model
+            ->get_list($per_page, $offset, $where, '', $findex, $forder);
+        $list_num = $result['total_rows'] - ($page - 1) * $per_page;
+        if (element('list', $result)) {
+            foreach (element('list', $result) as $key => $val) {
+                $result['list'][$key]['display_name'] = display_username(
+                    element('mem_userid', $val),
+                    element('mem_nickname', $val),
+                    element('mem_icon', $val)
+                );
+                $result['list'][$key]['display_datetime'] = display_datetime(element('cre_datetime', $val), 'full');
+                $result['list'][$key]['content'] = display_html_content(
+                    element('cre_content', $val),
+                    element('cre_content_html_type', $val),
+                    $thumb_width,
+                    $autolink,
+                    $popup
+                );
+                $result['list'][$key]['can_update'] = false;
+                $result['list'][$key]['can_delete'] = false;
+                if ($is_admin !== false
+                    OR (element('mem_id', $val) && $mem_id === (int) element('mem_id', $val))) {
+                    $result['list'][$key]['can_update'] = true;
+                    $result['list'][$key]['can_delete'] = true;
+                }
+                $result['list'][$key]['num'] = $list_num--;
+            }
+        }
+        $view['view']['data'] = $result;
+        $view['view']['post_id'] = $cit_id;
+
+        /**
+         * 페이지네이션을 생성합니다
+         */
+        $config['base_url'] = site_url('board_post/review_all_list/' . $cit_id) . '?' . $param->replace('page');
+        $config['total_rows'] = $result['total_rows'];
+        $config['per_page'] = $per_page;
+
+        if ( ! $this->input->get('page')) {
+            $_GET['page'] = (string) $page;
+        }
+
+//        $config['_attributes'] = 'onClick="cmall_review_page(\'' . $cit_id . '\', $(this).attr(\'data-ci-pagination-page\'));return false;"';
+        if ($this->cbconfig->get_device_view_type() === 'mobile') {
+            $config['num_links'] = 3;
+        } else {
+            $config['num_links'] = 5;
+        }
+        $this->pagination->initialize($config);
+        $view['view']['paging'] = $this->pagination->create_links();
+        $view['view']['page'] = $page;
+
+
+        // 이벤트가 존재하면 실행합니다
+        $view['view']['event']['before_layout'] = Events::trigger('before_layout', $eventname);
+
+        /**
+         * 레이아웃을 정의합니다
+         */
+
+        $skin = 'board/doctormoa_ad/post_review_list';
+
+        $view['view']['view_skin_url'] = site_url(VIEW_DIR . 'board/doctormoa_ad');
+
+        $this->data = $view;
+        $this->view = $skin;
+    }
+    /**
+     * 게시물 all 목록을 ajax 로 가져옵니다
+     */
+    public function review_all_list($cit_id = 0)
+    {
+        // 이벤트 라이브러리를 로딩합니다
+        $eventname = 'event_cmall_postreviewlist';
+        $this->load->event($eventname);
+
+        $cit_id = (int) $cit_id;
+        if (empty($cit_id) OR $cit_id < 1) {
+            show_404();
+        }
+
+        $view = array();
+        $view['view'] = array();
+
+        // 이벤트가 존재하면 실행합니다
+        $view['view']['event']['before'] = Events::trigger('before', $eventname);
+
+        $this->load->model(array('Post_model', 'Post_review_model'));
+
+        $item = $this->Post_model->get_one($cit_id);
+        if ( ! element('post_id', $item)) {
+            show_404();
+        }
+
+        $mem_id = (int) $this->member->item('mem_id');
+
+        /**
+         * 페이지에 숫자가 아닌 문자가 입력되거나 1보다 작은 숫자가 입력되면 에러 페이지를 보여줍니다.
+         */
+        $param =& $this->querystring;
+        $page = (((int) $this->input->get('page')) > 0) ? ((int) $this->input->get('page')) : 1;
+        $findex = $this->input->get('findex', null, 'post_id');
+        $forder = $this->input->get('forder', null, 'desc');
+        $sfield = '';
+        $skeyword = '';
+
+        $per_page = 3;
+        $offset = ($page - 1) * $per_page;
+
+        $is_admin = $this->member->is_admin();
+
+        /**
+         * 게시판 목록에 필요한 정보를 가져옵니다.
+         */
+        $where = array();
+//        $where['cre_status'] = 1;
+        $where['cit_id'] = $cit_id;
+
+        $thumb_width = ($this->cbconfig->get_device_view_type() === 'mobile')
+            ? $this->cbconfig->item('cmall_product_review_mobile_thumb_width')
+            : $this->cbconfig->item('cmall_product_review_thumb_width');
+        $autolink = ($this->cbconfig->get_device_view_type() === 'mobile')
+            ? $this->cbconfig->item('use_cmall_product_review_mobile_auto_url')
+            : $this->cbconfig->item('use_cmall_product_review_auto_url');
+        $popup = ($this->cbconfig->get_device_view_type() === 'mobile')
+            ? $this->cbconfig->item('cmall_product_review_mobile_content_target_blank')
+            : $this->cbconfig->item('cmall_product_review_content_target_blank');
+
+        $result = $this->Post_review_model
+            ->get_list($per_page, $offset, $where, '', $findex, $forder);
+        $list_num = $result['total_rows'] - ($page - 1) * $per_page;
+        if (element('list', $result)) {
+            foreach (element('list', $result) as $key => $val) {
+                $result['list'][$key]['display_name'] = display_username(
+                    element('mem_userid', $val),
+                    element('mem_nickname', $val),
+                    element('mem_icon', $val)
+                );
+                $result['list'][$key]['display_datetime'] = display_datetime(element('cre_datetime', $val), 'full');
+                $result['list'][$key]['content'] = display_html_content(
+                    element('cre_content', $val),
+                    element('cre_content_html_type', $val),
+                    $thumb_width,
+                    $autolink,
+                    $popup
+                );
+                $result['list'][$key]['can_update'] = false;
+                $result['list'][$key]['can_delete'] = false;
+                if ($is_admin !== false
+                    OR (element('mem_id', $val) && $mem_id === (int) element('mem_id', $val))) {
+                    $result['list'][$key]['can_update'] = true;
+                    $result['list'][$key]['can_delete'] = true;
+                }
+                $result['list'][$key]['num'] = $list_num--;
+            }
+        }
+        $view['view']['data'] = $result;
+        $view['view']['post_id'] = $cit_id;
+        $view['view']['post']=$item;
+        /**
+         * 페이지네이션을 생성합니다
+         */
+        $config['base_url'] = site_url('board_post/review_all_list/' . $cit_id) . '?' . $param->replace('page');
+        $config['total_rows'] = $result['total_rows'];
+        $config['per_page'] = $per_page;
+
+        if ( ! $this->input->get('page')) {
+            $_GET['page'] = (string) $page;
+        }
+
+        $config['_attributes'] = 'class ="page-link" onClick="cmall_review_page(\'' . $cit_id . '\', $(this).attr(\'data-ci-pagination-page\'));return false;"';
+        if ($this->cbconfig->get_device_view_type() === 'mobile') {
+            $config['num_links'] = 3;
+        } else {
+            $config['num_links'] = 5;
+        }
+        $this->pagination->initialize($config);
+        $view['view']['paging'] = $this->pagination->create_links();
+        $view['view']['page'] = $page;
+
+
+        // 이벤트가 존재하면 실행합니다
+        $view['view']['event']['before_layout'] = Events::trigger('before_layout', $eventname);
+
+        /**
+         * 레이아웃을 정의합니다
+         */
+
+//        $skin = 'board/doctormoa_ad/post_review_list';
+
+//        $view['view']['view_skin_url'] = site_url(VIEW_DIR . 'board/doctormoa_ad');
+
+//        $this->data = $view;
+//        $this->view = $skin;
+        /**
+         * 레이아웃을 정의합니다
+         */
+        $page_title = $this->cbconfig->item('site_meta_title_main');
+        $meta_description = $this->cbconfig->item('site_meta_description_main');
+        $meta_keywords = $this->cbconfig->item('site_meta_keywords_main');
+        $meta_author = $this->cbconfig->item('site_meta_author_main');
+        $page_name = $this->cbconfig->item('site_page_name_main');
+
+        $layoutconfig = array(
+            'path' => 'board',
+            'layout' => 'layout',
+            'skin' => 'post_review_all_list',
+            'layout_dir' => 'doctormoa_sub',
+            'mobile_layout_dir' => 'doctormoa_sub',
+            'use_sidebar' => $this->cbconfig->item('sidebar_main'),
+            'use_mobile_sidebar' => $this->cbconfig->item('mobile_sidebar_main'),
+            'skin_dir' => 'doctormoa_ad',
+            'mobile_skin_dir' => 'doctormoa_ad',
+            'page_title' => $page_title,
+            'meta_description' => $meta_description,
+            'meta_keywords' => $meta_keywords,
+            'meta_author' => $meta_author,
+            'page_name' => $page_name,
+        );
+        $view['layout'] = $this->managelayout->front($layoutconfig, $this->cbconfig->get_device_view_type());
+        $this->data = $view;
+        $this->layout = element('layout_skin_file', element('layout', $view));
+        $this->view = element('view_skin_file', element('layout', $view));
+    }
 }

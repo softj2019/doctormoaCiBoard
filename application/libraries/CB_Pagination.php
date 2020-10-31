@@ -56,23 +56,23 @@ class CB_Pagination extends CI_Pagination
 	public $next_link = '<span aria-hidden="true">&gt;</span>';
 	public $prev_link = '<span aria-hidden="true">&lt;</span>';
 	public $last_link = '<span aria-hidden="true">&raquo;</span>';
-	public $first_tag_open = '<li>';
+	public $first_tag_open = '<li class="page-item">';
 	public $first_tag_close = '</li>';
-	public $last_tag_open = '<li>';
+	public $last_tag_open = '<li class="page-item">';
 	public $last_tag_close = '</li>';
-	public $cur_tag_open = '<li class="active"><a>';
+	public $cur_tag_open = '<li class="page-item"><a class="page-link active">';
 	public $cur_tag_close = '</a></li>';
-	public $next_tag_open = '<li>';
+	public $next_tag_open = '<li class="page-item">';
 	public $next_tag_close = '</li>';
-	public $prev_tag_open = '<li>';
+	public $prev_tag_open = '<li class="page-item">';
 	public $prev_tag_close = '</li>';
 	public $full_tag_open = '<ul class="pagination">';
 	public $full_tag_close = '</ul>';
-	public $num_tag_open = '<li>';
+	public $num_tag_open = '<li class="page-item">';
 	public $num_tag_close = '</li>';
 	public $page_query_string = true;
 	public $query_string_segment = 'page';
-
+//    public $_attributes = array('class' => 'page-link');
 	/**
 	 * Constructor
 	 */

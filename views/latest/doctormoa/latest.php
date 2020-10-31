@@ -9,7 +9,7 @@
         foreach (element('latest', $view) as $key => $value) {
         ?>
         <li>
-            <a href="<?php echo element('url', $value); ?>" class="thumbnail" title="<?php echo html_escape(element('title', $value)); ?>">
+            <a href="<?php echo element('url', $value); ?>" class="" title="<?php echo html_escape(element('title', $value)); ?>">
                 <div class="new-img" style="background-image: url(<?php echo element('thumb_url', $value); ?>");"></div>
                 <div class="new-in">
                     <p class="new-tit"><?php echo element('store_name',element('extravars', $value)); ?></p>

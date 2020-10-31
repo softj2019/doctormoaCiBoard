@@ -18,7 +18,7 @@ class Search extends CB_Controller
 	/**
 	 * 모델을 로딩합니다
 	 */
-	protected $models = array('Board', 'Board_group', 'Post', 'Post_file', 'Search_keyword');
+	protected $models = array('Board', 'Board_group', 'Post', 'Post_file', 'Search_keyword','Post_extra_vars');
 
 	/**
 	 * 헬퍼를 로딩합니다
@@ -167,6 +167,7 @@ class Search extends CB_Controller
 				$result['list'][$key]['display_datetime'] = display_datetime(element('post_datetime', $val), 'user', 'Y-m-d H:i');
 				$result['list'][$key]['content'] = cut_str(strip_tags(element('post_content', $val)),200);
 				$result['list'][$key]['is_mobile'] = (element('post_device', $val) === 'mobile') ? true : false;
+                $result['list'][$key]['extravars'] = $this->Post_extra_vars_model->get_all_meta(element('post_id', $val));
 			}
 		}
 

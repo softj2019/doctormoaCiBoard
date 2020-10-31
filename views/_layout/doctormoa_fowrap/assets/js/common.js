@@ -94,17 +94,15 @@ $(".modalClose").click(function(){
     $('body').css('overflow', 'auto');
 });
 $(".review-btn-t").click(function(e){//201027 추가
-    e.preventDefault();
-    $("#review-mo-t").addClass('on');
+    if(is_member!=""){
+        e.preventDefault();
+        $("#review-mo-t").addClass('on');
+    }else{
+        alert('로그인 후 이용가능합니다.');
+    }
+
 });//~
- //summernote
- $(document).ready(function (){
-    $('#summernote').summernote({
-        tabsize: 2,
-        height: 350,
-        lang: 'ko-KR' // default: 'en-US'
-    });
-});
+
 
 $("textarea.autosize").on('keydown keyup', function () {
     $(this).height(1).height( $(this).prop('scrollHeight')-20 );	
